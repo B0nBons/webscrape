@@ -3,17 +3,18 @@ from bs4 import BeautifulSoup
 import re
 import time
 import warnings
+
+# Stop future warning
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-# 3. Create a program to store the outside temperature, the daily high, and daily low, every hour. 
+# Create a program to store the outside temperature, the daily high, and daily low, every hour. 
 
 time_elapse = 0
 URL = "https://forecast.weather.gov/MapClick.php?lat=39.6127&lon=-105.0162"
 
-while time_elapse < 2880:
-    page = requests.get(URL)
+while time_elapse <= 2880:
 
+    page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     # <p class="myforecast-current-lrg">50°F</p>
     current_temp = soup.find_all('p', {'class':"myforecast-current-lrg"}, recursive=True)
@@ -53,7 +54,8 @@ while time_elapse < 2880:
     with open('weather.csv', 'a') as f:
         tim = time.ctime()
         x = tim + "|" + temp + "|" + low + "|" + high
-        f.writelines(x)
+        f.writelines(x + '\n')
         print("Finished a line at " + tim)
+
     time.sleep(1800)
     time_elapse += 1800
